@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "1014111761756",
+    "firebase_url": "https://prmg5-dc6dc-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "prmg5-dc6dc",
+    "storage_bucket": "prmg5-dc6dc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014111761756:android:8a11ecf981b4489295bd99",
+        "android_client_info": {
+          "package_name": "com.example.prm392_group5"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAc8HuA5g0vMfMrHe4dDiPuw7EcGFH-YRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1014111761756:android:02b5d69f5399a3ec95bd99",
+        "android_client_info": {
+          "package_name": "com.example.prm392_group5_pojectmanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAc8HuA5g0vMfMrHe4dDiPuw7EcGFH-YRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
