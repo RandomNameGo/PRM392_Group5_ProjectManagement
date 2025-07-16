@@ -13,10 +13,19 @@
         android:theme="@style/Theme.PRM392_Group5"
         tools:targetApi="31">
         <activity
-            android:name=".view.UserActivity"
+            android:name=".view.activity.MemberActivity"
             android:exported="false" />
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.activity.LeaderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.ManagerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.UserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

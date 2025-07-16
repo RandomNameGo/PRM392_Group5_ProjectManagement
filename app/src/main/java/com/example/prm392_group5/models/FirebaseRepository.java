@@ -75,6 +75,124 @@ public class FirebaseRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    //----------------------Project----------------------//
+
+    // Create project
+    public void createProject(String projectId, Project project, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).setValue(project)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get project
+    public void getProject(String projectId, ProjectCallback callback) {
+        rootRef.child("projects").child(projectId).get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Project project = snapshot.getValue(Project.class);
+                        callback.onSuccess(project);
+                    } else {
+                        callback.onFailure("Project not found");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Update project
+    public void updateProject(String projectId, Project project, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).setValue(project)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Delete project
+    public void deleteProject(String projectId, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get all project
+    public void getAllProjects(ProjectListCallback callback) {
+        rootRef.child("projects").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Project> projectList = new ArrayList<>();
+                for (DataSnapshot projectSnap : snapshot.getChildren()) {
+                    Project project = projectSnap.getValue(Project.class);
+                    projectList.add(project);
+                }
+                callback.onSuccess(projectList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.getMessage());
+            }
+        });
+    }
+
+    //Get project by leader
+    public void getProjectsByLeader(String leaderId, ProjectListCallback callback) {
+        rootRef.child("projects").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Project> result = new ArrayList<>();
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Project project = snap.getValue(Project.class);
+                    if (project != null && leaderId.equals(project.leaderId)) {
+                        result.add(project);
+                    }
+                }
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.getMessage());
+            }
+        });
+    }
+
+    //Get project by member
+    public void getProjectsByMember(String memberId, ProjectListCallback callback) {
+        rootRef.child("projects").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Project> result = new ArrayList<>();
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    Project project = snap.getValue(Project.class);
+                    if (project != null && project.members != null && project.members.containsKey(memberId)) {
+                        result.add(project);
+                    }
+                }
+                callback.onSuccess(result);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.getMessage());
+            }
+        });
+    }
+
+    //Add member
+    public void addMemberToProject(String projectId, String memberId, SimpleCallback callback) {
+        DatabaseReference memberRef = rootRef.child("projects").child(projectId).child("members").child(memberId);
+        memberRef.setValue(true)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Remove member
+    public void removeMemberFromProject(String projectId, String memberId, SimpleCallback callback) {
+        DatabaseReference memberRef = rootRef.child("projects").child(projectId).child("members").child(memberId);
+        memberRef.removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //----------------------Interface----------------------//
 
     public interface UserListCallback {
         void onSuccess(List<User> users);
@@ -83,6 +201,16 @@ public class FirebaseRepository {
 
     public interface UserCallback {
         void onSuccess(User user);
+        void onFailure(String error);
+    }
+
+    public interface ProjectCallback {
+        void onSuccess(Project project);
+        void onFailure(String error);
+    }
+
+    public interface ProjectListCallback {
+        void onSuccess(List<Project> projects);
         void onFailure(String error);
     }
 

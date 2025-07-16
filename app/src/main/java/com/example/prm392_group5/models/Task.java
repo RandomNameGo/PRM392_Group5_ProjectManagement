@@ -8,6 +8,8 @@ public class Task {
     public String assignedTo;
     public String status;
     public HashMap<String, Report> reports;
+    public HashMap<String, Issue> issues;
+
 
     public Task() {}
 
@@ -17,5 +19,6 @@ public class Task {
         this.assignedTo = assignedTo;
         this.status = status;
         this.reports = new HashMap<>();
+        this.issues = new HashMap<>();
     }
 }
