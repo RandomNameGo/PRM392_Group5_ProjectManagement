@@ -13,6 +13,9 @@
         android:theme="@style/Theme.PRM392_Group5"
         tools:targetApi="31">
         <activity
+            android:name=".view.activity.ProjectActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activity.MemberActivity"
             android:exported="false" />
         <activity
