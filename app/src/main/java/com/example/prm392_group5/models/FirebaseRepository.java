@@ -192,6 +192,229 @@ public class FirebaseRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    //----------------------Task----------------------//
+
+    //Create task
+    public void createTask(String projectId, String taskId, Task task, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId)
+                .setValue(task)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Get task
+    public void getTask(String projectId, String taskId, TaskCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Task task = snapshot.getValue(Task.class);
+                        callback.onSuccess(task);
+                    } else {
+                        callback.onFailure("Task not found");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Update task
+    public void updateTask(String projectId, String taskId, Task task, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId)
+                .setValue(task)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Delete Task
+    public void deleteTask(String projectId, String taskId, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId)
+                .removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Get all task in project
+    public void getAllTasks(String projectId, TaskListCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Task> taskList = new ArrayList<>();
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            Task task = snap.getValue(Task.class);
+                            taskList.add(task);
+                        }
+                        callback.onSuccess(taskList);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    //Assign Task
+    public void assignTaskToUser(String projectId, String taskId, String userId, SimpleCallback callback) {
+        DatabaseReference taskRef = rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("assignedTo");
+
+        taskRef.setValue(userId)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //Get all task by member
+    public void getTasksByAssignedUser(String userId, TaskListCallback callback) {
+        rootRef.child("projects")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Task> result = new ArrayList<>();
+                        for (DataSnapshot projectSnap : snapshot.getChildren()) {
+                            DataSnapshot tasksSnap = projectSnap.child("tasks");
+                            for (DataSnapshot taskSnap : tasksSnap.getChildren()) {
+                                Task task = taskSnap.getValue(Task.class);
+                                if (task != null && userId.equals(task.assignedTo)) {
+                                    result.add(task);
+                                }
+                            }
+                        }
+                        callback.onSuccess(result);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    //----------------------Report----------------------//
+
+    // Create report
+    public void createReport(String projectId, String taskId, String reportId, Report report, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("reports").child(reportId)
+                .setValue(report)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get report
+    public void getReport(String projectId, String taskId, String reportId, ReportCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("reports").child(reportId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Report report = snapshot.getValue(Report.class);
+                        callback.onSuccess(report);
+                    } else {
+                        callback.onFailure("Report not found.");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get all reports by taskId
+    public void getAllReports(String projectId, String taskId, ReportListCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("reports")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Report> reportList = new ArrayList<>();
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            Report report = child.getValue(Report.class);
+                            reportList.add(report);
+                        }
+                        callback.onSuccess(reportList);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    // Update report
+    public void updateReport(String projectId, String taskId, String reportId, Report report, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("reports").child(reportId)
+                .setValue(report)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Delete report
+    public void deleteReport(String projectId, String taskId, String reportId, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("reports").child(reportId)
+                .removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    //----------------------Issue----------------------//
+
+
+    // Create issue
+    public void createIssue(String projectId, String taskId, String issueId, Issue issue, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("issues").child(issueId)
+                .setValue(issue)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get issue
+    public void getIssue(String projectId, String taskId, String issueId, IssueCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("issues").child(issueId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.exists()) {
+                        Issue issue = snapshot.getValue(Issue.class);
+                        callback.onSuccess(issue);
+                    } else {
+                        callback.onFailure("Issue not found.");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get all issues by taskId
+    public void getAllIssues(String projectId, String taskId, IssueListCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("issues")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<Issue> issueList = new ArrayList<>();
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            Issue issue = child.getValue(Issue.class);
+                            issueList.add(issue);
+                        }
+                        callback.onSuccess(issueList);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    // Update issue
+    public void updateIssue(String projectId, String taskId, String issueId, Issue issue, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("issues").child(issueId)
+                .setValue(issue)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Delete issue
+    public void deleteIssue(String projectId, String taskId, String issueId, SimpleCallback callback) {
+        rootRef.child("projects").child(projectId).child("tasks").child(taskId).child("issues").child(issueId)
+                .removeValue()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+
     //----------------------Interface----------------------//
 
     public interface UserListCallback {
@@ -213,6 +436,37 @@ public class FirebaseRepository {
         void onSuccess(List<Project> projects);
         void onFailure(String error);
     }
+
+    public interface TaskCallback {
+        void onSuccess(Task task);
+        void onFailure(String error);
+    }
+
+    public interface TaskListCallback {
+        void onSuccess(List<Task> tasks);
+        void onFailure(String error);
+    }
+
+    public interface ReportCallback {
+        void onSuccess(Report report);
+        void onFailure(String error);
+    }
+
+    public interface ReportListCallback {
+        void onSuccess(List<Report> reports);
+        void onFailure(String error);
+    }
+
+    public interface IssueCallback {
+        void onSuccess(Issue issue);
+        void onFailure(String error);
+    }
+
+    public interface IssueListCallback {
+        void onSuccess(List<Issue> issues);
+        void onFailure(String error);
+    }
+
 
     public interface SimpleCallback {
         void onSuccess();
