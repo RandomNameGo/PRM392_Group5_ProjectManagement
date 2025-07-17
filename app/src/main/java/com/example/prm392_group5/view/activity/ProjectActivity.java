@@ -1,37 +1,22 @@
 package com.example.prm392_group5.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.prm392_group5.R;
 
-public class ManagerActivity extends AppCompatActivity {
+public class ProjectActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_manager);
-
-        Button userBtn = findViewById(R.id.userBtn);
-        Button projectBtn = findViewById(R.id.projectBtn);
-
-        userBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ManagerActivity.this, UserActivity.class);
-            startActivity(intent);
-        });
-
-        projectBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(ManagerActivity.this, ProjectActivity.class);
-            startActivity(intent);
-        });
-
+        setContentView(R.layout.activity_project);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
