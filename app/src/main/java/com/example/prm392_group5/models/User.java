@@ -1,6 +1,9 @@
 package com.example.prm392_group5.models;
 
 public class User {
+
+    public String uid;
+
     public String name;
     public String email;
     public String role;

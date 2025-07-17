@@ -3,6 +3,7 @@ package com.example.prm392_group5.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,10 +15,24 @@ import com.example.prm392_group5.models.User;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
-    private List<User> userList;
 
-    public UserAdapter(List<User> list) {
+    public interface UserActionListener {
+        void onEdit(User user, String uid);
+        void onDelete(String uid);
+    }
+
+    public interface OnUserClickListener {
+        void onUserClick(User user);
+    }
+
+    private OnUserClickListener clickListener;
+    private List<User> userList;
+    private UserActionListener listener;
+
+    public UserAdapter(List<User> list, UserActionListener listener, OnUserClickListener clickListener) {
         this.userList = list;
+        this.listener = listener;
+        this.clickListener = clickListener;
     }
 
     public void setUserList(List<User> newList) {
@@ -38,6 +53,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         User u = userList.get(position);
         holder.txtName.setText(u.name);
         holder.txtEmail.setText(u.email + " (" + u.role + ")");
+
+        String uid = u.uid;
+        holder.btnEdit.setOnClickListener(v -> listener.onEdit(u, uid));
+        holder.btnDelete.setOnClickListener(v -> listener.onDelete(uid));
+
+        holder.itemView.setOnClickListener(v -> clickListener.onUserClick(u));
+
     }
 
     @Override
@@ -47,11 +69,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtEmail;
+        Button btnEdit, btnDelete;
+
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.textName);
             txtEmail = itemView.findViewById(R.id.textEmail);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
