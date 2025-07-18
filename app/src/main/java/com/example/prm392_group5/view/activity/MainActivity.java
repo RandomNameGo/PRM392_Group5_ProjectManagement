@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import com.example.prm392_group5.R;
 import com.example.prm392_group5.models.User;
@@ -36,6 +39,17 @@ public class MainActivity extends AppCompatActivity {
         userRef = FirebaseDatabase.getInstance().getReference("users");
 
         btnLogin.setOnClickListener(v -> login());
+
+
+        // Animations
+        ImageView loginImage = findViewById(R.id.loginImage);
+        ImageView bottomImage = findViewById(R.id.bottomImage);
+
+        Animation fadeScaleAnim = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
+        Animation slideUpAnim = AnimationUtils.loadAnimation(this, R.anim.slide_up);
+
+        loginImage.startAnimation(fadeScaleAnim);
+        bottomImage.startAnimation(slideUpAnim);
     }
 
     private void login() {
