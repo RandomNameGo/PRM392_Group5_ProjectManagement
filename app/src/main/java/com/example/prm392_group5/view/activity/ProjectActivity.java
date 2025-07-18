@@ -1,6 +1,7 @@
 package com.example.prm392_group5.view.activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -98,8 +99,11 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         });
         
         adapter.setOnProjectClickListener(project -> {
-            // TODO: Navigate to project details
-            Toast.makeText(this, "Clicked: " + project.name, Toast.LENGTH_SHORT).show();
+            // Navigate to TaskActivity for this project
+            Intent intent = new Intent(ProjectActivity.this, TaskActivity.class);
+            intent.putExtra("projectId", project.uid);
+            intent.putExtra("projectName", project.name);
+            startActivity(intent);
         });
     }
 
