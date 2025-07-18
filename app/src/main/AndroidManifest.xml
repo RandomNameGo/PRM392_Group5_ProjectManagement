@@ -16,6 +16,18 @@
             android:name=".view.activity.ProjectActivity"
             android:exported="false" />
         <activity
+            android:name=".view.activity.TaskActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.ReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activity.IssueActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activity.MemberActivity"
             android:exported="false" />
         <activity
