@@ -26,6 +26,7 @@ public class ManagerActivity extends AppCompatActivity {
 
         Button userBtn = findViewById(R.id.userBtn);
         Button projectBtn = findViewById(R.id.projectBtn);
+        Button btnProfile = findViewById(R.id.btnProfile);
         Button btnLogout = findViewById(R.id.btnLogout);
 
         userBtn.setOnClickListener(v -> {
@@ -35,6 +36,11 @@ public class ManagerActivity extends AppCompatActivity {
 
         projectBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ManagerActivity.this, ProjectActivity.class);
+            startActivity(intent);
+        });
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(ManagerActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
 

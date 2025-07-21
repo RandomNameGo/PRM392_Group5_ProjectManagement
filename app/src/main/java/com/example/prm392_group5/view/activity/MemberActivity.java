@@ -47,7 +47,13 @@ public class MemberActivity extends AppCompatActivity implements ProjectContract
 
     private void initViews() {
         recyclerViewMemberProjects = findViewById(R.id.recyclerViewMemberProjects);
+        Button btnProfile = findViewById(R.id.btnProfile);
         Button btnLogout = findViewById(R.id.btnLogout);
+
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(MemberActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
 
         btnLogout.setOnClickListener(v -> logout());
     }

@@ -18,17 +18,18 @@
         android:layout_gravity="top"
         android:background="@drawable/headerbackground"/>
 
+    <!-- Projects Section Card -->
     <TextView
         android:id="@+id/tvLeaderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Leader Dashboard"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:gravity="center"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp" />
+        android:gravity="center"
+        android:text="Leader Dashboard"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/leaderImage"
@@ -39,7 +40,6 @@
         android:layout_marginBottom="20dp"
         android:background="@drawable/coffeeman" />
 
-    <!-- Projects Section Card -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,19 +52,19 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="213dp"
             android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="My Projects as Leader"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
+                android:layout_marginBottom="12dp"
                 android:gravity="center"
-                android:layout_marginBottom="12dp" />
+                android:text="My Projects as Leader"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewLeaderProjects"
@@ -76,15 +76,51 @@
                 android:id="@+id/tvEmptyMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No projects assigned to you as leader.\nCreate a new project to get started!"
-                android:textSize="16sp"
-                android:textColor="@color/white"
                 android:gravity="center"
-                android:visibility="gone"
-                android:padding="20dp" />
+                android:padding="20dp"
+                android:text="No projects assigned to you as leader.\nCreate a new project to get started!"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
+
+    <!-- Action Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Profile"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:backgroundTint="#D127AE60"
+            android:background="@drawable/glassmorphism_background"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Logout"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:backgroundTint="#D1FF0000"
+            android:background="@drawable/glassmorphism_background"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    </LinearLayout>
 
 </LinearLayout>
