@@ -4,9 +4,15 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,6 +41,8 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     private Button btnAddProject, btnUpdateProject, btnCancelEdit;
     private Button btnShowAll, btnShowMyProjects, btnShowAsLeader;
     private RecyclerView recyclerViewProjects, recyclerViewMembers;
+    private LinearLayout layoutCreateProjectHeader, layoutCreateProjectContent;
+    private ImageView ivExpandCollapse;
     
     private ProjectPresenter presenter;
     private UserPresenter userPresenter;
@@ -47,6 +55,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     private String currentUserId;
     private String currentUserRole;
     private Project editingProject = null;
+    private boolean isCreateProjectExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +157,11 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         btnShowMyProjects = findViewById(R.id.btnShowMyProjects);
         btnShowAsLeader = findViewById(R.id.btnShowAsLeader);
         recyclerViewProjects = findViewById(R.id.recyclerViewProjects);
+        
+        // Shrinkable bar elements
+        layoutCreateProjectHeader = findViewById(R.id.layoutCreateProjectHeader);
+        layoutCreateProjectContent = findViewById(R.id.layoutCreateProjectContent);
+        ivExpandCollapse = findViewById(R.id.ivExpandCollapse);
     }
 
     private void initData() {
@@ -228,6 +242,9 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         btnShowAll.setOnClickListener(v -> presenter.getAllProjects());
         btnShowMyProjects.setOnClickListener(v -> presenter.getProjectsByMember(currentUserId));
         btnShowAsLeader.setOnClickListener(v -> presenter.getProjectsByLeader(currentUserId));
+        
+        // Shrinkable bar click listener
+        layoutCreateProjectHeader.setOnClickListener(v -> toggleCreateProjectSection());
     }
 
     private void addProject() {
@@ -292,6 +309,10 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
 
     private void startEditProject(Project project) {
         editingProject = project;
+        
+        // Auto-expand the create project section for editing
+        autoExpandForEdit();
+        
         etProjectName.setText(project.name);
         etProjectDescription.setText(project.description);
         setSelectedLeader(project.leaderId);
@@ -347,6 +368,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     public void onProjectCreated() {
         Toast.makeText(this, "Project created successfully", Toast.LENGTH_SHORT).show();
         clearForm();
+        collapseCreateProjectSection(); // Auto-collapse after successful creation
         loadInitialProjects(); // Refresh list based on user role
     }
 
@@ -359,6 +381,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     public void onProjectUpdated() {
         Toast.makeText(this, "Project updated successfully", Toast.LENGTH_SHORT).show();
         cancelEdit();
+        collapseCreateProjectSection(); // Auto-collapse after successful update
         loadInitialProjects(); // Refresh list based on user role
     }
 
@@ -427,5 +450,49 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         this.userList.addAll(userList);
         updateLeaderSpinner();
         updateMemberList();
+    }
+
+    private void toggleCreateProjectSection() {
+        if (isCreateProjectExpanded) {
+            collapseCreateProjectSection();
+        } else {
+            expandCreateProjectSection();
+        }
+    }
+
+    private void expandCreateProjectSection() {
+        isCreateProjectExpanded = true;
+        layoutCreateProjectContent.setVisibility(View.VISIBLE);
+        
+        // Rotate arrow icon
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 180,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivExpandCollapse.startAnimation(rotateAnimation);
+        
+        // Change icon to collapse
+        ivExpandCollapse.setImageResource(R.drawable.ic_expand_less);
+    }
+
+    private void collapseCreateProjectSection() {
+        isCreateProjectExpanded = false;
+        layoutCreateProjectContent.setVisibility(View.GONE);
+        
+        // Rotate arrow icon back
+        RotateAnimation rotateAnimation = new RotateAnimation(180, 0,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivExpandCollapse.startAnimation(rotateAnimation);
+        
+        // Change icon to expand
+        ivExpandCollapse.setImageResource(R.drawable.ic_expand_more);
+    }
+
+    private void autoExpandForEdit() {
+        if (!isCreateProjectExpanded) {
+            expandCreateProjectSection();
+        }
     }
 }

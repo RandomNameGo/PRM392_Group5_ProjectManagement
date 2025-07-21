@@ -4,8 +4,14 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -33,6 +39,8 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private Spinner spinnerStatus, spinnerAssignee;
     private Button btnAddTask, btnUpdateTask, btnCancelEdit;
     private RecyclerView recyclerViewTasks;
+    private LinearLayout layoutCreateTaskHeader, layoutCreateTaskContent;
+    private ImageView headerImage, ivTaskExpandCollapse;
     
     private TaskPresenter taskPresenter;
     private UserPresenter userPresenter;
@@ -44,6 +52,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private String currentUserRole;
     private String projectId;
     private Task editingTask = null;
+    private boolean isCreateTaskExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +72,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         setupRecyclerView();
         setupClickListeners();
         setupSpinners();
+        setupAnimations();
         
         // Load tasks and users
         taskPresenter.getAllTasks(projectId);
@@ -78,6 +88,12 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         btnUpdateTask = findViewById(R.id.btnUpdateTask);
         btnCancelEdit = findViewById(R.id.btnCancelEdit);
         recyclerViewTasks = findViewById(R.id.recyclerViewTasks);
+        
+        // Shrinkable bar elements
+        layoutCreateTaskHeader = findViewById(R.id.layoutCreateTaskHeader);
+        layoutCreateTaskContent = findViewById(R.id.layoutCreateTaskContent);
+        headerImage = findViewById(R.id.headerImage);
+        ivTaskExpandCollapse = findViewById(R.id.ivTaskExpandCollapse);
     }
 
     private void initData() {
@@ -139,6 +155,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         btnAddTask.setOnClickListener(v -> addTask());
         btnUpdateTask.setOnClickListener(v -> updateTask());
         btnCancelEdit.setOnClickListener(v -> cancelEdit());
+        
+        // Shrinkable bar click listener
+        layoutCreateTaskHeader.setOnClickListener(v -> toggleCreateTaskSection());
     }
 
     private void setupSpinners() {
@@ -209,6 +228,10 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
 
     private void startEditTask(Task task) {
         editingTask = task;
+        
+        // Auto-expand the create task section for editing
+        autoExpandForEdit();
+        
         etTaskTitle.setText(task.title);
         etTaskDescription.setText(task.description);
         
@@ -266,6 +289,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     public void onTaskCreated() {
         Toast.makeText(this, "Task created successfully", Toast.LENGTH_SHORT).show();
         clearForm();
+        collapseCreateTaskSection(); // Auto-collapse after successful creation
         taskPresenter.getAllTasks(projectId);
     }
 
@@ -278,6 +302,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     public void onTaskUpdated() {
         Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
         cancelEdit();
+        collapseCreateTaskSection(); // Auto-collapse after successful update
         taskPresenter.getAllTasks(projectId);
     }
 
@@ -330,5 +355,55 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     @Override
     public void onError(String error) {
         Toast.makeText(this, "Error: " + error, Toast.LENGTH_LONG).show();
+    }
+
+    private void setupAnimations() {
+        // Apply the same animations as ManagerActivity
+        Animation slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+        headerImage.startAnimation(slideDownAnim);
+    }
+
+    private void toggleCreateTaskSection() {
+        if (isCreateTaskExpanded) {
+            collapseCreateTaskSection();
+        } else {
+            expandCreateTaskSection();
+        }
+    }
+
+    private void expandCreateTaskSection() {
+        isCreateTaskExpanded = true;
+        layoutCreateTaskContent.setVisibility(View.VISIBLE);
+        
+        // Rotate arrow icon
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 180,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivTaskExpandCollapse.startAnimation(rotateAnimation);
+        
+        // Change icon to collapse
+        ivTaskExpandCollapse.setImageResource(R.drawable.ic_expand_less);
+    }
+
+    private void collapseCreateTaskSection() {
+        isCreateTaskExpanded = false;
+        layoutCreateTaskContent.setVisibility(View.GONE);
+        
+        // Rotate arrow icon back
+        RotateAnimation rotateAnimation = new RotateAnimation(180, 0,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(300);
+        rotateAnimation.setFillAfter(true);
+        ivTaskExpandCollapse.startAnimation(rotateAnimation);
+        
+        // Change icon to expand
+        ivTaskExpandCollapse.setImageResource(R.drawable.ic_expand_more);
+    }
+
+    private void autoExpandForEdit() {
+        if (!isCreateTaskExpanded) {
+            expandCreateTaskSection();
+        }
     }
 }

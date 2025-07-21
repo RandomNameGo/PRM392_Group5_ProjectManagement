@@ -4,8 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#F5F7FA">
+    android:background="@drawable/gradient_background">
+
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:elevation="0dp"
+        android:layout_marginBottom="-30dp"
+        android:layout_gravity="top"
+        android:background="@drawable/headerbackground"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -14,17 +22,21 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="#2C3E50"
-        android:layout_marginBottom="16dp" />
+        android:textColor="@color/white"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp" />
 
-    <!-- Add Task Section -->
+    <!-- Add Task Section - Shrinkable Bar -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardCreateTask"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
-        android:backgroundTint="#FFFFFF">
+        android:layout_marginHorizontal="16dp"
+        android:backgroundTint="#5098ABC8"
+        android:background="@drawable/glassmorphism_background"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,77 +44,137 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Add New Task"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#2C3E50"
-                android:layout_marginBottom="12dp" />
-
-            <EditText
-                android:id="@+id/etTaskTitle"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Task Title"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/etTaskDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Task Description"
-                android:minLines="3"
-                android:gravity="top"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinnerStatus"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinnerAssignee"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="12dp" />
-
+            <!-- Header Bar - Always Visible -->
             <LinearLayout
+                android:id="@+id/layoutCreateTaskHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp">
 
-                <Button
-                    android:id="@+id/btnAddTask"
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Add Task"
-                    android:backgroundTint="#4A90E2" />
+                    android:text="Add New Task"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
 
-                <Button
-                    android:id="@+id/btnUpdateTask"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="Update Task"
-                    android:backgroundTint="#27AE60"
-                    android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/ivTaskExpandCollapse"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:contentDescription="Expand/Collapse" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btnCancelEdit"
+            <!-- Expandable Content -->
+            <LinearLayout
+                android:id="@+id/layoutCreateTaskContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Cancel Edit"
+                android:orientation="vertical"
                 android:visibility="gone"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etTaskTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Task Title"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="8dp" />
+
+                <EditText
+                    android:id="@+id/etTaskDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Task Description"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"
+                    android:minLines="3"
+                    android:gravity="top"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Task Status"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:padding="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Assign To"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="4dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerAssignee"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:padding="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnAddTask"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:text="Add Task"
+                        android:textSize="15sp"
+                        android:backgroundTint="#5B699B"
+                        style="@style/Widget.Material3.Button" />
+
+                    <Button
+                        android:id="@+id/btnUpdateTask"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="Update Task"
+                        android:backgroundTint="#27AE60"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnCancelEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Cancel Edit"
+                    android:visibility="gone"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
