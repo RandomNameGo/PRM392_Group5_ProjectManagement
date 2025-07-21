@@ -4,8 +4,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -66,6 +69,11 @@ public class UserActivity extends AppCompatActivity implements UserContract.View
 
         btnCreate = findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(v -> showCreateUserDialog());
+
+        // Animations
+        Animation slideDownAni = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        recyclerView.startAnimation(slideDownAni);
     }
 
     private void showCreateUserDialog() {

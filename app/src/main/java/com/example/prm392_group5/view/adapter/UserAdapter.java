@@ -4,6 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,6 +64,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
         holder.itemView.setOnClickListener(v -> clickListener.onUserClick(u));
 
+        //Animations
+        Animation slideIn = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.slide_in_right);
+        slideIn.setStartOffset(300);
+        holder.actionsLayout.startAnimation(slideIn);
     }
 
     @Override
@@ -70,6 +78,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtEmail;
         Button btnEdit, btnDelete;
+        LinearLayout actionsLayout;
 
 
         public UserViewHolder(@NonNull View itemView) {
@@ -78,6 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             txtEmail = itemView.findViewById(R.id.textEmail);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            actionsLayout = itemView.findViewById(R.id.actionsBtn);
         }
     }
 }

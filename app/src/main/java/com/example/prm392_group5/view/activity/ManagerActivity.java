@@ -3,6 +3,9 @@ package com.example.prm392_group5.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,5 +40,15 @@ public class ManagerActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Animations
+        ImageView headerImage = findViewById(R.id.headerImage);
+        ImageView managerImage = findViewById(R.id.managerImage);
+
+        Animation fadeScaleAnim = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
+        Animation slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        headerImage.startAnimation(slideDownAnim);
+        managerImage.startAnimation(fadeScaleAnim);
     }
 }

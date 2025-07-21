@@ -6,9 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:background="@drawable/gradient_background"
     tools:context=".view.activity.ProjectActivity">
 
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:elevation="0dp"
+        android:layout_marginBottom="-30dp"
+        android:layout_gravity="top"
+        android:background="@drawable/headerbackground"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:backgroundTint="#5098ABC8"
+        android:background="@drawable/glassmorphism_background"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp">
 
@@ -97,10 +108,13 @@
                 <Button
                     android:id="@+id/btnAddProject"
                     android:layout_width="0dp"
+                    android:textSize="15sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="Add Project" />
+                    android:backgroundTint="#5B699B"
+                    android:text="Add Project"
+                    style="@style/Widget.Material3.Button"  />
 
                 <Button
                     android:id="@+id/btnUpdateProject"
@@ -131,7 +145,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp">
 
         <Button
             android:id="@+id/btnShowAll"
@@ -140,7 +155,9 @@
             android:layout_weight="1"
             android:layout_marginEnd="4dp"
             android:text="All Projects"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textSize="11sp"
+            android:backgroundTint="#1B000000"
+            style="@style/Widget.Material3.Button" />
 
         <Button
             android:id="@+id/btnShowMyProjects"
@@ -150,7 +167,9 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:text="My Projects"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textSize="11sp"
+            android:backgroundTint="#2C001F87"
+            style="@style/Widget.Material3.Button"  />
 
         <Button
             android:id="@+id/btnShowAsLeader"
@@ -159,7 +178,9 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:text="As Leader"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:textSize="11sp"
+            android:backgroundTint="#2E005F22"
+            style="@style/Widget.Material3.Button"  />
 
     </LinearLayout>
 

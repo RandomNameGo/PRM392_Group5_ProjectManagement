@@ -44,10 +44,10 @@
                     android:text="OPEN"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="4dp"
-                    android:background="#E74C3C" />
+                    android:background="#3C834D" />
 
             </androidx.cardview.widget.CardView>
 
@@ -82,19 +82,20 @@
 
             <Button
                 android:id="@+id/btnEditIssue"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
                 android:text="Edit"
-                android:textSize="11sp"
-                android:textColor="#4A90E2"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+                android:textSize="10sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#1994A2"
+                style="@style/Widget.Material3.Button"  />
 
             <Button
                 android:id="@+id/btnDeleteIssue"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
@@ -106,14 +107,15 @@
 
             <Button
                 android:id="@+id/btnToggleResolved"
-                android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:text="Resolve"
                 android:textSize="11sp"
                 android:textColor="#27AE60"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+                android:backgroundTint="#D9D9D9"
+                style="@style/Widget.Material3.Button" />
 
         </LinearLayout>
 

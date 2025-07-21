@@ -6,8 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
-    android:padding="24dp"
+    android:background="@drawable/gradient_background"
     tools:context=".view.activity.MainActivity">
 
     <!-- Card Container for the login form -->
@@ -15,13 +14,14 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginHorizontal="50dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,32 +29,40 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <ImageView
+                android:id="@+id/loginImage"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/login"
+                android:scaleType="centerCrop" />
             <!-- Title -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome Back"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:layout_marginBottom="24dp"
+                android:text="Welcome"
+                android:textAlignment="center"
                 android:textColor="#212121"
-                android:layout_marginBottom="24dp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <!-- Email Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/emailInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:hint="Email"
                 app:boxStrokeColor="#3F51B5"
-                app:hintTextColor="#3F51B5"
-                android:layout_marginBottom="16dp">
+                app:hintTextColor="#3F51B5">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editEmail"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:backgroundTint="#3F51B5" />
+                    android:layout_height="50dp"
+                    android:backgroundTint="#FFFF"
+                    android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,18 +71,18 @@
                 android:id="@+id/passwordInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
                 android:hint="Password"
                 app:boxStrokeColor="#3F51B5"
-                app:hintTextColor="#3F51B5"
                 app:endIconMode="password_toggle"
-                android:layout_marginBottom="24dp">
+                app:hintTextColor="#3F51B5">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editPassword"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:backgroundTint="#3F51B5" />
+                    android:layout_height="50dp"
+                    android:backgroundTint="#FFFF"
+                    android:inputType="textPassword" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,15 +91,25 @@
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#A3BFF3"
+                android:padding="12dp"
                 android:text="Login"
                 android:textAllCaps="false"
+                android:textColor="#ffff"
                 android:textSize="16sp"
-                android:padding="12dp"
-                app:cornerRadius="8dp"
-                app:backgroundTint="#3F51B5"
-                android:textColor="#FFFFFF" />
-
+                app:cornerRadius="8dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <ImageView
+        android:id="@+id/bottomImage"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:elevation="10dp"
+        android:layout_marginLeft="-20dp"
+        android:background="@drawable/smartphoneuser3dclayicon"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
