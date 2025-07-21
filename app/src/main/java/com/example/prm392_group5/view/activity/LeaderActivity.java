@@ -3,6 +3,9 @@ package com.example.prm392_group5.view.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +30,7 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
 
     private RecyclerView recyclerViewProjects;
     private TextView tvTitle, tvEmptyMessage;
+    private ImageView headerImage, leaderImage;
     private ProjectPresenter presenter;
     private ProjectAdapter adapter;
     private List<Project> projectList;
@@ -46,6 +50,7 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
         initViews();
         initData();
         setupRecyclerView();
+        setupAnimations();
         loadLeaderProjects();
     }
 
@@ -53,6 +58,8 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
         recyclerViewProjects = findViewById(R.id.recyclerViewLeaderProjects);
         tvTitle = findViewById(R.id.tvLeaderTitle);
         tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        headerImage = findViewById(R.id.headerImage);
+        leaderImage = findViewById(R.id.leaderImage);
     }
 
     private void initData() {
@@ -185,5 +192,14 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
         super.onResume();
         // Refresh projects when returning to this activity
         loadLeaderProjects();
+    }
+
+    private void setupAnimations() {
+        // Apply the same animations as ManagerActivity
+        Animation fadeScaleAnim = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
+        Animation slideDownAnim = AnimationUtils.loadAnimation(this, R.anim.slide_down);
+
+        headerImage.startAnimation(slideDownAnim);
+        leaderImage.startAnimation(fadeScaleAnim);
     }
 }
