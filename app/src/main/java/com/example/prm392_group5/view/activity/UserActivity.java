@@ -47,10 +47,17 @@ public class UserActivity extends AppCompatActivity implements UserContract.View
 
                     @Override
                     public void onDelete(String uid) {
-                        presenter.deleteUser(uid);
+                        new AlertDialog.Builder(UserActivity.this)
+                                .setTitle("Delete confirm")
+                                .setMessage("Are you sure you want to delete this user?")
+                                .setPositiveButton("Delete", (dialog, which) -> {
+                                    presenter.deleteUser(uid);
+                                })
+                                .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                                .show();
                     }
                 },
-                user -> showUserDetailDialog(user) // Xử lý khi click
+                user -> showUserDetailDialog(user)
         );
 
         recyclerView.setAdapter(adapter);
@@ -154,7 +161,6 @@ public class UserActivity extends AppCompatActivity implements UserContract.View
 
         List<User> filteredList = new ArrayList<>();
         for (User user : userList) {
-            // Bỏ qua user có UID giống UID đang đăng nhập
             if (user.uid != null && !user.uid.equals(currentUid)) {
                 filteredList.add(user);
             }
