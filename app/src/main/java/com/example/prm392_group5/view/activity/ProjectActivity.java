@@ -22,6 +22,7 @@ import com.example.prm392_group5.presenter.ProjectPresenter;
 import com.example.prm392_group5.presenter.UserContract;
 import com.example.prm392_group5.presenter.UserPresenter;
 import com.example.prm392_group5.view.adapter.ProjectAdapter;
+import com.example.prm392_group5.view.adapter.MemberCheckboxAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,12 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     private Spinner spinnerProjectLeader;
     private Button btnAddProject, btnUpdateProject, btnCancelEdit;
     private Button btnShowAll, btnShowMyProjects, btnShowAsLeader;
-    private RecyclerView recyclerViewProjects;
+    private RecyclerView recyclerViewProjects, recyclerViewMembers;
     
     private ProjectPresenter presenter;
     private UserPresenter userPresenter;
     private ProjectAdapter adapter;
+    private MemberCheckboxAdapter memberAdapter;
     private List<Project> projectList;
     private List<User> userList;
     private ArrayAdapter<String> leaderAdapter;
@@ -56,8 +58,8 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         setupRecyclerView();
         setupClickListeners();
         
-        // Load all projects initially
-        presenter.getAllProjects();
+        // Load projects based on user role
+        loadInitialProjects();
     }
 
     private void setupLeaderSpinner() {
@@ -68,12 +70,22 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         spinnerProjectLeader.setAdapter(leaderAdapter);
     }
 
+    private void setupMemberRecyclerView() {
+        List<User> memberList = new ArrayList<>();
+        memberAdapter = new MemberCheckboxAdapter(memberList);
+        recyclerViewMembers.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewMembers.setAdapter(memberAdapter);
+    }
+
     private void updateLeaderSpinner() {
         List<String> leaderNames = new ArrayList<>();
         leaderNames.add("Select Project Leader");
         
+        // Only include users who have the "leader" role
         for (User user : userList) {
-            leaderNames.add(user.name + " (" + user.email + ")");
+            if ("leader".equals(user.role)) {
+                leaderNames.add(user.name + " (" + user.email + ")");
+            }
         }
         
         leaderAdapter.clear();
@@ -81,12 +93,38 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         leaderAdapter.notifyDataSetChanged();
     }
 
+    private void updateMemberList() {
+        List<User> memberList = new ArrayList<>();
+        
+        // Only include users who have the "member" role
+        for (User user : userList) {
+            if ("member".equals(user.role)) {
+                memberList.add(user);
+            }
+        }
+        
+        memberAdapter.updateMembers(memberList);
+    }
+
     private String getSelectedLeaderId() {
         int selectedPosition = spinnerProjectLeader.getSelectedItemPosition();
-        if (selectedPosition > 0 && selectedPosition <= userList.size()) {
-            return userList.get(selectedPosition - 1).uid;
+        if (selectedPosition > 0) {
+            // Find the leader user from filtered list
+            int leaderIndex = 0;
+            for (User user : userList) {
+                if ("leader".equals(user.role)) {
+                    if (leaderIndex == selectedPosition - 1) {
+                        return user.uid;
+                    }
+                    leaderIndex++;
+                }
+            }
         }
         return currentUserId; // Default to current user if no selection
+    }
+
+    private List<String> getSelectedMemberIds() {
+        return memberAdapter.getSelectedMemberIds();
     }
 
     private void setSelectedLeader(String leaderId) {
@@ -102,6 +140,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         etProjectName = findViewById(R.id.etProjectName);
         etProjectDescription = findViewById(R.id.etProjectDescription);
         spinnerProjectLeader = findViewById(R.id.spinnerProjectLeader);
+        recyclerViewMembers = findViewById(R.id.recyclerViewMembers);
         btnAddProject = findViewById(R.id.btnAddProject);
         btnUpdateProject = findViewById(R.id.btnUpdateProject);
         btnCancelEdit = findViewById(R.id.btnCancelEdit);
@@ -122,8 +161,9 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         currentUserId = prefs.getString("uid", "");
         currentUserRole = prefs.getString("role", "");
         
-        // Setup spinner adapter
+        // Setup spinner adapters
         setupLeaderSpinner();
+        setupMemberRecyclerView();
         
         // Load users for leader selection
         userPresenter.getAllUsers();
@@ -153,12 +193,31 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         });
         
         adapter.setOnProjectClickListener(project -> {
+            // Check if current user is a manager
+            if ("manager".equals(currentUserRole)) {
+                return;
+            }
+            
             // Navigate to TaskActivity for this project
             Intent intent = new Intent(ProjectActivity.this, TaskActivity.class);
             intent.putExtra("projectId", project.uid);
             intent.putExtra("projectName", project.name);
             startActivity(intent);
         });
+    }
+
+    private void loadInitialProjects() {
+        // Load projects based on user role
+        if ("member".equals(currentUserRole)) {
+            // Members see only projects they are assigned to
+            presenter.getProjectsByMember(currentUserId);
+        } else if ("leader".equals(currentUserRole)) {
+            // Leaders see projects they lead
+            presenter.getProjectsByLeader(currentUserId);
+        } else {
+            // Managers and others see all projects
+            presenter.getAllProjects();
+        }
     }
 
     private void setupClickListeners() {
@@ -175,6 +234,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         String name = etProjectName.getText().toString().trim();
         String description = etProjectDescription.getText().toString().trim();
         String selectedLeaderId = getSelectedLeaderId();
+        List<String> selectedMemberIds = getSelectedMemberIds();
 
         if (name.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -190,7 +250,13 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         // Current user is creator, selected user is leader
         Project project = new Project(name, description, currentUserId, selectedLeaderId);
         
-        presenter.createProject(projectId, project);
+        // Create project with members using the new method
+        if (!selectedMemberIds.isEmpty()) {
+            Toast.makeText(this, "Creating project with " + selectedMemberIds.size() + " member(s)", Toast.LENGTH_SHORT).show();
+            presenter.createProjectWithMembers(projectId, project, selectedMemberIds);
+        } else {
+            presenter.createProject(projectId, project);
+        }
     }
 
     private void updateProject() {
@@ -199,6 +265,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         String name = etProjectName.getText().toString().trim();
         String description = etProjectDescription.getText().toString().trim();
         String selectedLeaderId = getSelectedLeaderId();
+        List<String> selectedMemberIds = getSelectedMemberIds();
 
         if (name.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -214,7 +281,13 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         editingProject.description = description;
         editingProject.leaderId = selectedLeaderId; // Update leader
         
-        presenter.updateProject(editingProject.uid, editingProject);
+        // Update project with members using the new method
+        if (!selectedMemberIds.isEmpty()) {
+            Toast.makeText(this, "Updating project with " + selectedMemberIds.size() + " member(s)", Toast.LENGTH_SHORT).show();
+            presenter.updateProjectWithMembers(editingProject.uid, editingProject, selectedMemberIds);
+        } else {
+            presenter.updateProject(editingProject.uid, editingProject);
+        }
     }
 
     private void startEditProject(Project project) {
@@ -222,10 +295,26 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         etProjectName.setText(project.name);
         etProjectDescription.setText(project.description);
         setSelectedLeader(project.leaderId);
+        setSelectedMembers(project);
         
         btnAddProject.setVisibility(Button.GONE);
         btnUpdateProject.setVisibility(Button.VISIBLE);
         btnCancelEdit.setVisibility(Button.VISIBLE);
+    }
+
+    private void setSelectedMembers(Project project) {
+        // Clear current selections first
+        memberAdapter.clearSelections();
+        
+        // If project has members, pre-select them
+        if (project.members != null && !project.members.isEmpty()) {
+            // Get the current member list from adapter and select the ones in the project
+            for (String memberId : project.members.keySet()) {
+                // The adapter will handle the selection internally
+                // We need to add a method to set selections in the adapter
+                memberAdapter.setMemberSelected(memberId, true);
+            }
+        }
     }
 
     private void cancelEdit() {
@@ -241,6 +330,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         etProjectName.setText("");
         etProjectDescription.setText("");
         spinnerProjectLeader.setSelection(0); // Reset to "Select Project Leader"
+        memberAdapter.clearSelections(); // Clear all member selections
     }
 
     private void showDeleteConfirmation(Project project) {
@@ -257,7 +347,7 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     public void onProjectCreated() {
         Toast.makeText(this, "Project created successfully", Toast.LENGTH_SHORT).show();
         clearForm();
-        presenter.getAllProjects(); // Refresh list
+        loadInitialProjects(); // Refresh list based on user role
     }
 
     @Override
@@ -269,13 +359,13 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
     public void onProjectUpdated() {
         Toast.makeText(this, "Project updated successfully", Toast.LENGTH_SHORT).show();
         cancelEdit();
-        presenter.getAllProjects(); // Refresh list
+        loadInitialProjects(); // Refresh list based on user role
     }
 
     @Override
     public void onProjectDeleted() {
         Toast.makeText(this, "Project deleted successfully", Toast.LENGTH_SHORT).show();
-        presenter.getAllProjects(); // Refresh list
+        loadInitialProjects(); // Refresh list based on user role
     }
 
     @Override
@@ -336,5 +426,6 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         this.userList.clear();
         this.userList.addAll(userList);
         updateLeaderSpinner();
+        updateMemberList();
     }
 }

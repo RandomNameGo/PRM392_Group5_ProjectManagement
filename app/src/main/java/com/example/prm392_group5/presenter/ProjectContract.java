@@ -20,8 +20,10 @@ public interface ProjectContract {
 
     interface Presenter {
         void createProject(String projectId, Project project);
+        void createProjectWithMembers(String projectId, Project project, List<String> memberIds);
         void getProject(String projectId);
         void updateProject(String projectId, Project project);
+        void updateProjectWithMembers(String projectId, Project project, List<String> memberIds);
         void deleteProject(String projectId);
         void getAllProjects();
         void addMemberToProject(String projectId, String memberId);

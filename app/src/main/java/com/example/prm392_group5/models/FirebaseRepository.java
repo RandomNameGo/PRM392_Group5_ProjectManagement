@@ -87,6 +87,37 @@ public class FirebaseRepository {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
+    // Create project with members
+    public void createProjectWithMembers(String projectId, Project project, List<String> memberIds, SimpleCallback callback) {
+        // First create the project
+        rootRef.child("projects").child(projectId).setValue(project)
+                .addOnSuccessListener(unused -> {
+                    // If project creation is successful and there are members to add
+                    if (memberIds != null && !memberIds.isEmpty()) {
+                        addMembersToProject(projectId, memberIds, callback);
+                    } else {
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Helper method to add multiple members to a project
+    private void addMembersToProject(String projectId, List<String> memberIds, SimpleCallback callback) {
+        DatabaseReference membersRef = rootRef.child("projects").child(projectId).child("members");
+        
+        // Create a map of all members to add
+        java.util.Map<String, Object> membersMap = new java.util.HashMap<>();
+        for (String memberId : memberIds) {
+            membersMap.put(memberId, true);
+        }
+        
+        // Add all members at once
+        membersRef.updateChildren(membersMap)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
     // Get project
     public void getProject(String projectId, ProjectCallback callback) {
         rootRef.child("projects").child(projectId).get()
@@ -105,6 +136,50 @@ public class FirebaseRepository {
     public void updateProject(String projectId, Project project, SimpleCallback callback) {
         rootRef.child("projects").child(projectId).setValue(project)
                 .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Update project with members
+    public void updateProjectWithMembers(String projectId, Project project, List<String> memberIds, SimpleCallback callback) {
+        // First update the project basic info
+        DatabaseReference projectRef = rootRef.child("projects").child(projectId);
+        
+        // Update project fields (excluding members)
+        java.util.Map<String, Object> projectUpdates = new java.util.HashMap<>();
+        projectUpdates.put("name", project.name);
+        projectUpdates.put("description", project.description);
+        projectUpdates.put("leaderId", project.leaderId);
+        
+        projectRef.updateChildren(projectUpdates)
+                .addOnSuccessListener(unused -> {
+                    // Clear existing members and add new ones
+                    updateProjectMembers(projectId, memberIds, callback);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Helper method to update project members (replaces all existing members)
+    private void updateProjectMembers(String projectId, List<String> memberIds, SimpleCallback callback) {
+        DatabaseReference membersRef = rootRef.child("projects").child(projectId).child("members");
+        
+        // First remove all existing members, then add new ones
+        membersRef.removeValue()
+                .addOnSuccessListener(unused -> {
+                    if (memberIds != null && !memberIds.isEmpty()) {
+                        // Add new members
+                        java.util.Map<String, Object> membersMap = new java.util.HashMap<>();
+                        for (String memberId : memberIds) {
+                            membersMap.put(memberId, true);
+                        }
+                        
+                        membersRef.updateChildren(membersMap)
+                                .addOnSuccessListener(unused2 -> callback.onSuccess())
+                                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                    } else {
+                        // No members to add, just complete successfully
+                        callback.onSuccess();
+                    }
+                })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
