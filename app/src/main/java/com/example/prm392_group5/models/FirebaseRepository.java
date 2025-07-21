@@ -147,6 +147,7 @@ public class FirebaseRepository {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Project project = snap.getValue(Project.class);
                     if (project != null && leaderId.equals(project.leaderId)) {
+                        project.uid = snap.getKey(); // Set the project UID
                         result.add(project);
                     }
                 }
@@ -169,6 +170,7 @@ public class FirebaseRepository {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Project project = snap.getValue(Project.class);
                     if (project != null && project.members != null && project.members.containsKey(memberId)) {
+                        project.uid = snap.getKey(); // Set the project UID
                         result.add(project);
                     }
                 }
