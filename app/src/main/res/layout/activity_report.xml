@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".view.activity.ProjectActivity">
+    android:background="#F5F7FA">
 
     <TextView
+        android:id="@+id/tvTaskTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Project Management"
+        android:text="Reports for Task"
         android:textSize="24sp"
         android:textStyle="bold"
         android:gravity="center"
+        android:textColor="#2C3E50"
         android:layout_marginBottom="16dp" />
 
-    <!-- Add Project Section -->
+    <!-- Add Report Section -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        android:backgroundTint="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,27 +36,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add New Project"
+                android:text="Add New Report"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:textColor="#2C3E50"
+                android:layout_marginBottom="12dp" />
 
             <EditText
-                android:id="@+id/etProjectName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Project Name"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/etProjectDescription"
+                android:id="@+id/etReportContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Project Description"
-                android:minLines="3"
+                android:hint="Enter your report content..."
+                android:minLines="4"
                 android:gravity="top"
-                android:layout_marginBottom="8dp" />
-
+                android:layout_marginBottom="12dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,20 +57,22 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btnAddProject"
+                    android:id="@+id/btnAddReport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
-                    android:text="Add Project" />
+                    android:text="Add Report"
+                    android:backgroundTint="#27AE60" />
 
                 <Button
-                    android:id="@+id/btnUpdateProject"
+                    android:id="@+id/btnUpdateReport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
-                    android:text="Update Project"
+                    android:text="Update Report"
+                    android:backgroundTint="#4A90E2"
                     android:visibility="gone" />
 
             </LinearLayout>
@@ -94,46 +90,18 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Filter Section -->
-    <LinearLayout
+    <!-- Reports List -->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:text="All Reports"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#2C3E50"
+        android:layout_marginBottom="12dp" />
 
-        <Button
-            android:id="@+id/btnShowAll"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:text="All Projects"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-
-        <Button
-            android:id="@+id/btnShowMyProjects"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:text="My Projects"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-
-        <Button
-            android:id="@+id/btnShowAsLeader"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:text="As Leader"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-
-    </LinearLayout>
-
-    <!-- Projects List -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProjects"
+        android:id="@+id/recyclerViewReports"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

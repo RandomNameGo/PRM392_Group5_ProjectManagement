@@ -3,6 +3,8 @@ package com.example.prm392_group5.models;
 import java.util.HashMap;
 
 public class Project {
+    public String uid;
+
     public String name;
     public String description;
     public String createdBy;

@@ -49,7 +49,10 @@ public class FirebaseRepository {
                 List<User> userList = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     User user = child.getValue(User.class);
-                    userList.add(user);
+                    if (user != null) {
+                        user.uid = child.getKey();
+                        userList.add(user);
+                    }
                 }
                 callback.onSuccess(userList);
             }
@@ -120,7 +123,10 @@ public class FirebaseRepository {
                 List<Project> projectList = new ArrayList<>();
                 for (DataSnapshot projectSnap : snapshot.getChildren()) {
                     Project project = projectSnap.getValue(Project.class);
-                    projectList.add(project);
+                    if(project != null){
+                        project.uid = projectSnap.getKey();
+                        projectList.add(project);
+                    }
                 }
                 callback.onSuccess(projectList);
             }

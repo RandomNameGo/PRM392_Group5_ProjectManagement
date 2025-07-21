@@ -9,11 +9,12 @@
     android:padding="25dp"
     tools:context=".view.activity.ManagerActivity">
 
+
     <Button
-        android:id="@+id/userBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="User" />
+    android:id="@+id/userBtn"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="User" />
 
     <Button
         android:id="@+id/projectBtn"
@@ -21,3 +22,4 @@
         android:layout_height="wrap_content"
         android:text="Project" />
 </LinearLayout>
+
