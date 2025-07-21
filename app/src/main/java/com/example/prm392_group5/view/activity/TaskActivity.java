@@ -74,9 +74,21 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         setupSpinners();
         setupAnimations();
         
+        // Hide add task functionality for members
+        setupMemberRestrictions();
+        
         // Load tasks and users
         taskPresenter.getAllTasks(projectId);
         userPresenter.getAllUsers();
+    }
+
+    private void setupMemberRestrictions() {
+        // Hide task creation form for members
+        if ("member".equals(currentUserRole)) {
+            // Hide the entire add task CardView section by its ID
+            androidx.cardview.widget.CardView addTaskCard = findViewById(R.id.cardCreateTask);
+            addTaskCard.setVisibility(View.GONE);
+        }
     }
 
     private void initViews() {
@@ -111,6 +123,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         adapter = new TaskAdapter(taskList);
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTasks.setAdapter(adapter);
+        
+        // Set member mode to hide edit/delete buttons for members
+        adapter.setMemberMode("member".equals(currentUserRole));
         
         adapter.setTaskActionListener(new TaskAdapter.TaskActionListener() {
             @Override

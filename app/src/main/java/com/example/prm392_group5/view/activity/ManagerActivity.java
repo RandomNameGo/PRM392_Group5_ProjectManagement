@@ -1,11 +1,13 @@
 package com.example.prm392_group5.view.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class ManagerActivity extends AppCompatActivity {
 
         Button userBtn = findViewById(R.id.userBtn);
         Button projectBtn = findViewById(R.id.projectBtn);
+        Button btnLogout = findViewById(R.id.btnLogout);
 
         userBtn.setOnClickListener(v -> {
             Intent intent = new Intent(ManagerActivity.this, UserActivity.class);
@@ -34,6 +37,8 @@ public class ManagerActivity extends AppCompatActivity {
             Intent intent = new Intent(ManagerActivity.this, ProjectActivity.class);
             startActivity(intent);
         });
+
+        btnLogout.setOnClickListener(v -> logout());
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -50,5 +55,22 @@ public class ManagerActivity extends AppCompatActivity {
 
         headerImage.startAnimation(slideDownAnim);
         managerImage.startAnimation(fadeScaleAnim);
+    }
+
+    private void logout() {
+        // Clear SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        // Show logout message
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        // Navigate to MainActivity and clear activity stack
+        Intent intent = new Intent(ManagerActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
