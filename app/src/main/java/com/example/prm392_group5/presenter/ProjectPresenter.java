@@ -30,6 +30,21 @@ public class ProjectPresenter implements ProjectContract.Presenter {
     }
 
     @Override
+    public void createProjectWithMembers(String projectId, Project project, List<String> memberIds) {
+        repository.createProjectWithMembers(projectId, project, memberIds, new FirebaseRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                view.onProjectCreated();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                view.onError(error);
+            }
+        });
+    }
+
+    @Override
     public void getProject(String projectId) {
         repository.getProject(projectId, new FirebaseRepository.ProjectCallback() {
             @Override
@@ -47,6 +62,21 @@ public class ProjectPresenter implements ProjectContract.Presenter {
     @Override
     public void updateProject(String projectId, Project project) {
         repository.updateProject(projectId, project, new FirebaseRepository.SimpleCallback() {
+            @Override
+            public void onSuccess() {
+                view.onProjectUpdated();
+            }
+
+            @Override
+            public void onFailure(String error) {
+                view.onError(error);
+            }
+        });
+    }
+
+    @Override
+    public void updateProjectWithMembers(String projectId, Project project, List<String> memberIds) {
+        repository.updateProjectWithMembers(projectId, project, memberIds, new FirebaseRepository.SimpleCallback() {
             @Override
             public void onSuccess() {
                 view.onProjectUpdated();
