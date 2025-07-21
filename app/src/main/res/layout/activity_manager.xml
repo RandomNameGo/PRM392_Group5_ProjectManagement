@@ -6,20 +6,69 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="25dp"
-    tools:context=".view.activity.ManagerActivity">
+    tools:context=".view.activity.ManagerActivity"
+    android:background="@drawable/gradient_background">
 
-
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:elevation="0dp"
+        android:layout_marginBottom="-50dp"
+        android:layout_gravity="top"
+        android:background="@drawable/headerbackground"/>
+    <ImageView
+        android:id="@+id/managerImage"
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_marginHorizontal="80dp"
+        android:background="@drawable/coffeeman"
+        />
     <Button
-    android:id="@+id/userBtn"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="User" />
+        android:id="@+id/userBtn"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:text="User"
+        android:textSize="30dp"
+        android:textAlignment="textEnd"
+        android:paddingRight="50dp"
+        android:layout_marginHorizontal="25dp"
+        android:backgroundTint="#66003ACE"
+        android:textColor="@color/white"
+        android:background="@drawable/edittext_bg"/>
 
     <Button
         android:id="@+id/projectBtn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Project" />
-</LinearLayout>
+        android:layout_height="180dp"
+        android:layout_marginTop="20dp"
+        android:text="Project"
+        android:textSize="30dp"
+        android:textAlignment="textStart"
+        android:paddingLeft="50dp"
+        android:layout_marginHorizontal="25dp"
+        android:backgroundTint="#D1A34FDC"
+        android:textColor="@color/white"
+        android:background="@drawable/edittext_bg" />
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="end|top"
+        android:translationY="-150dp"
+        android:translationX="-50dp"
+        android:background="@drawable/stickynotes"
+        android:elevation="4dp"
+        />
 
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="top|end"
+        android:translationY="-470dp"
+        android:translationX="-230dp"
+        android:background="@drawable/man"
+        android:elevation="2dp"
+        />
+</LinearLayout>
