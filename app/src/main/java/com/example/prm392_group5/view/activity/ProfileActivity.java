@@ -27,25 +27,25 @@ public class ProfileActivity extends AppCompatActivity implements UserContract.V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+//        setContentView(R.layout.activity_profile);
         
-        initViews();
+//        initViews();
         initData();
         loadUserProfile();
     }
 
-    private void initViews() {
-        tvUserName = findViewById(R.id.tvUserName);
-        tvUserEmail = findViewById(R.id.tvUserEmail);
-        tvUserRole = findViewById(R.id.tvUserRole);
-        tvProjectCount = findViewById(R.id.tvProjectCount);
-        tvTaskCount = findViewById(R.id.tvTaskCount);
-        btnEditProfile = findViewById(R.id.btnEditProfile);
-        btnLogout = findViewById(R.id.btnLogout);
-        
-        btnEditProfile.setOnClickListener(v -> editProfile());
-        btnLogout.setOnClickListener(v -> logout());
-    }
+//    private void initViews() {
+//        tvUserName = findViewById(R.id.tvUserName);
+//        tvUserEmail = findViewById(R.id.tvUserEmail);
+//        tvUserRole = findViewById(R.id.tvUserRole);
+//        tvProjectCount = findViewById(R.id.tvProjectCount);
+//        tvTaskCount = findViewById(R.id.tvTaskCount);
+//        btnEditProfile = findViewById(R.id.btnEditProfile);
+//        btnLogout = findViewById(R.id.btnLogout);
+//
+//        btnEditProfile.setOnClickListener(v -> editProfile());
+//        btnLogout.setOnClickListener(v -> logout());
+//    }
 
     private void initData() {
         presenter = new UserPresenter(this);
