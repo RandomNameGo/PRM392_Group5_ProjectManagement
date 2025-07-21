@@ -29,9 +29,15 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
     private List<Project> projectList;
     private ProjectActionListener actionListener;
     private OnProjectClickListener clickListener;
+    private boolean isMemberMode = false;
 
     public ProjectAdapter(List<Project> projectList) {
         this.projectList = projectList;
+    }
+
+    public void setMemberMode(boolean memberMode) {
+        this.isMemberMode = memberMode;
+        notifyDataSetChanged();
     }
 
     public void setProjectActionListener(ProjectActionListener listener) {
@@ -84,6 +90,17 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
             tvProjectName.setText(project.name);
             tvProjectDescription.setText(project.description);
             tvProjectLeader.setText("Leader: " + project.leaderId);
+
+            // Hide action buttons in member mode
+            if (isMemberMode) {
+                btnEdit.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.GONE);
+                btnManageMembers.setVisibility(View.GONE);
+            } else {
+                btnEdit.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(View.VISIBLE);
+                btnManageMembers.setVisibility(View.VISIBLE);
+            }
 
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {

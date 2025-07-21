@@ -6,29 +6,140 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white"
-    tools:context=".view.activity.MemberActivity">
+    tools:context=".view.activity.MemberActivity"
+    android:background="@drawable/gradient_background">
 
-    <!-- Header Text -->
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:elevation="0dp"
+        android:layout_marginBottom="-50dp"
+        android:layout_gravity="top"
+        android:background="@drawable/headerbackground"/>
+
+    <ImageView
+        android:id="@+id/memberImage"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginHorizontal="100dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/man"
+        />
+
     <TextView
-        android:id="@+id/tvProjectsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp"
-        android:text="Your Projects"
-        android:textColor="#222222"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+        android:text="My Projects"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4" />
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProjects"
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Projects assigned to you as a member"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:alpha="0.9" />
+
+    <!-- Projects Container with Enhanced Glassmorphism -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingBottom="8dp"
-        android:scrollbars="vertical" />
+        android:layout_weight="1.5"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="12dp"
+        android:backgroundTint="#44FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/glassmorphism_background"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your Assigned Projects"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_marginBottom="15dp"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/white"
+                android:alpha="0.3"
+                android:layout_marginBottom="15dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMemberProjects"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:padding="8dp"
+                android:scrollbars="none"
+                android:background="@drawable/glassmorphism_background"
+                android:elevation="2dp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btnLogout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="25dp"
+        android:layout_marginBottom="20dp"
+        android:text="Logout"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:backgroundTint="#D1FF0000"
+        android:background="@drawable/glassmorphism_background"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+    <!-- Decorative Elements -->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="end|top"
+        android:translationY="-180dp"
+        android:translationX="-30dp"
+        android:background="@drawable/stickynotes"
+        android:elevation="4dp"
+        />
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:layout_gravity="start|top"
+        android:translationY="-400dp"
+        android:translationX="30dp"
+        android:background="@drawable/coffeeman"
+        android:elevation="2dp"
+        />
 
 </LinearLayout>

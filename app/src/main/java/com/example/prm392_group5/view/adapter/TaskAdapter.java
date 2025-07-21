@@ -30,9 +30,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     private List<Task> taskList;
     private TaskActionListener actionListener;
     private OnTaskClickListener clickListener;
+    private boolean isMemberMode = false;
 
     public TaskAdapter(List<Task> taskList) {
         this.taskList = taskList;
+    }
+
+    public void setMemberMode(boolean isMemberMode) {
+        this.isMemberMode = isMemberMode;
+        notifyDataSetChanged();
     }
 
     public void setTaskActionListener(TaskActionListener listener) {
@@ -92,6 +98,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             // Set status color
             int statusColor = getStatusColor(task.status);
             tvTaskStatus.setBackgroundColor(statusColor);
+
+            // Hide edit and delete buttons for members
+            if (isMemberMode) {
+                btnEdit.setVisibility(View.GONE);
+                btnDelete.setVisibility(View.GONE);
+            } else {
+                btnEdit.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(View.VISIBLE);
+            }
 
             itemView.setOnClickListener(v -> {
                 if (clickListener != null) {
