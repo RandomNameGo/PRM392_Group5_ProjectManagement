@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,6 +61,17 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
         tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
         headerImage = findViewById(R.id.headerImage);
         leaderImage = findViewById(R.id.leaderImage);
+        
+        // Profile and Logout buttons
+        Button btnProfile = findViewById(R.id.btnProfile);
+        Button btnLogout = findViewById(R.id.btnLogout);
+        
+        btnProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(LeaderActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        });
+        
+        btnLogout.setOnClickListener(v -> logout());
     }
 
     private void initData() {
@@ -201,5 +213,22 @@ public class LeaderActivity extends AppCompatActivity implements ProjectContract
 
         headerImage.startAnimation(slideDownAnim);
         leaderImage.startAnimation(fadeScaleAnim);
+    }
+
+    private void logout() {
+        // Clear SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("MyApp", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+
+        // Show logout message
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        // Navigate to MainActivity and clear activity stack
+        Intent intent = new Intent(LeaderActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
