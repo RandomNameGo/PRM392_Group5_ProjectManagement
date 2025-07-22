@@ -207,6 +207,12 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         });
         
         adapter.setOnProjectClickListener(project -> {
+            // Check if user is manager - managers cannot access TaskActivity
+            if ("manager".equals(currentUserRole)) {
+                Toast.makeText(ProjectActivity.this, "Managers cannot access task details", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
             // Navigate to TaskActivity for this project
             Intent intent = new Intent(ProjectActivity.this, TaskActivity.class);
             intent.putExtra("projectId", project.uid);
