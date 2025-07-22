@@ -26,6 +26,67 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="16dp" />
 
+    <!-- Project Progress Section -->
+    <LinearLayout
+        android:id="@+id/layoutProjectProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#5098ABC8"
+            android:background="@drawable/glassmorphism_background"
+            app:cardCornerRadius="50dp"
+            app:cardElevation="4dp"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:padding="16dp">
+
+                <ProgressBar
+                    android:id="@+id/progressBarProject"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/circle_progress_background"
+                    android:progressDrawable="@drawable/circle_progress_drawable"
+                    android:max="100"
+                    android:progress="0" />
+
+                <TextView
+                    android:id="@+id/tvProgressPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="0%"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Project Progress"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
+
     <!-- Add Task Section - Shrinkable Bar -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardCreateTask"

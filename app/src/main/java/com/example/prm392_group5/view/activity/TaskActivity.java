@@ -14,8 +14,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -46,8 +48,10 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private Spinner spinnerAssignee;
     private Button btnAddTask, btnUpdateTask, btnCancelEdit, btnClearDeadline;
     private RecyclerView recyclerViewTasks;
-    private LinearLayout layoutCreateTaskHeader, layoutCreateTaskContent;
+    private LinearLayout layoutCreateTaskHeader, layoutCreateTaskContent, layoutProjectProgress;
     private ImageView headerImage, ivTaskExpandCollapse;
+    private ProgressBar progressBarProject;
+    private TextView tvProgressPercentage;
     
     private TaskPresenter taskPresenter;
     private UserPresenter userPresenter;
@@ -115,6 +119,11 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         layoutCreateTaskContent = findViewById(R.id.layoutCreateTaskContent);
         headerImage = findViewById(R.id.headerImage);
         ivTaskExpandCollapse = findViewById(R.id.ivTaskExpandCollapse);
+        
+        // Progress bar elements
+        layoutProjectProgress = findViewById(R.id.layoutProjectProgress);
+        progressBarProject = findViewById(R.id.progressBarProject);
+        tvProgressPercentage = findViewById(R.id.tvProgressPercentage);
     }
 
     private void initData() {
@@ -221,6 +230,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     }
 
     private void addTask() {
+        android.util.Log.d("TaskActivity", "addTask called - starting task creation");
         String title = etTaskTitle.getText().toString().trim();
         String description = etTaskDescription.getText().toString().trim();
         
@@ -234,6 +244,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         // All new tasks automatically start with "In Progress" status
         Task task = new Task(title, description, assignedTo, "In Progress", selectedDeadline);
         
+        android.util.Log.d("TaskActivity", "Creating task with ID: " + taskId + ", Project ID: " + projectId);
         taskPresenter.createTask(projectId, taskId, task);
     }
 
@@ -325,6 +336,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     // TaskContract.View implementations
     @Override
     public void onTaskCreated() {
+        android.util.Log.d("TaskActivity", "onTaskCreated called - task created successfully");
         Toast.makeText(this, "Task created successfully", Toast.LENGTH_SHORT).show();
         clearForm();
         collapseCreateTaskSection(); // Auto-collapse after successful creation
@@ -358,9 +370,11 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
 
     @Override
     public void onTaskListLoaded(List<Task> taskList) {
+        android.util.Log.d("TaskActivity", "onTaskListLoaded called with " + taskList.size() + " tasks");
         this.taskList.clear();
         this.taskList.addAll(taskList);
         adapter.updateTasks(this.taskList);
+        updateProjectProgress();
     }
 
     @Override
@@ -399,6 +413,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     @Override
     public void onError(String error) {
         Toast.makeText(this, "Error: " + error, Toast.LENGTH_LONG).show();
+        // Don't finish the activity on error - just show the error message
+        // Log the error for debugging
+        android.util.Log.e("TaskActivity", "Error occurred: " + error);
     }
 
     private void setupAnimations() {
@@ -506,5 +523,40 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         
         // Immediately update the adapter to reflect the change
         adapter.notifyDataSetChanged();
+        
+        // Update progress after status change
+        updateProjectProgress();
+    }
+
+    private void updateProjectProgress() {
+        if (taskList.isEmpty()) {
+            // Hide progress bar if no tasks
+            layoutProjectProgress.setVisibility(View.GONE);
+            return;
+        }
+
+        // Show progress bar if there are tasks
+        layoutProjectProgress.setVisibility(View.VISIBLE);
+
+        // Calculate completion percentage
+        int totalTasks = taskList.size();
+        int completedTasks = 0;
+
+        for (Task task : taskList) {
+            if ("Done".equals(task.status)) {
+                completedTasks++;
+            }
+        }
+
+        int progressPercentage = totalTasks > 0 ? (completedTasks * 100) / totalTasks : 0;
+
+        // Update progress bar and text
+        progressBarProject.setProgress(progressPercentage);
+        tvProgressPercentage.setText(progressPercentage + "%");
+
+        // Add animation to progress bar
+        android.animation.ObjectAnimator.ofInt(progressBarProject, "progress", 0, progressPercentage)
+                .setDuration(1000)
+                .start();
     }
 }

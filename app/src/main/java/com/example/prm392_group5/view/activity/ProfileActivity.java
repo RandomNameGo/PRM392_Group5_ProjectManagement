@@ -33,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity implements UserContract.V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile);
         
         initViews();
         initData();
@@ -42,17 +42,17 @@ public class ProfileActivity extends AppCompatActivity implements UserContract.V
     }
 
     private void initViews() {
-//        tvUserName = findViewById(R.id.tvUserName);
-//        tvUserEmail = findViewById(R.id.tvUserEmail);
-//        tvUserRole = findViewById(R.id.tvUserRole);
-//        tvProjectCount = findViewById(R.id.tvProjectCount);
-//        tvTaskCount = findViewById(R.id.tvTaskCount);
-//        btnEditProfile = findViewById(R.id.btnEditProfile);
-//        btnChangePassword = findViewById(R.id.btnChangePassword);
-//        btnBackToDashboard = findViewById(R.id.btnBackToDashboard);
-//        btnLogout = findViewById(R.id.btnLogout);
-//        headerImage = findViewById(R.id.headerImage);
-//        ivProfilePicture = findViewById(R.id.ivProfilePicture);
+        tvUserName = findViewById(R.id.tvUserName);
+        tvUserEmail = findViewById(R.id.tvUserEmail);
+        tvUserRole = findViewById(R.id.tvUserRole);
+        tvProjectCount = findViewById(R.id.tvProjectCount);
+        tvTaskCount = findViewById(R.id.tvTaskCount);
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+        btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnBackToDashboard = findViewById(R.id.btnBackToDashboard);
+        btnLogout = findViewById(R.id.btnLogout);
+        headerImage = findViewById(R.id.headerImage);
+        ivProfilePicture = findViewById(R.id.ivProfilePicture);
 
         btnEditProfile.setOnClickListener(v -> editProfile());
         btnChangePassword.setOnClickListener(v -> changePassword());
