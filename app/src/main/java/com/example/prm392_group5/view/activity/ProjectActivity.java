@@ -207,11 +207,6 @@ public class ProjectActivity extends AppCompatActivity implements ProjectContrac
         });
         
         adapter.setOnProjectClickListener(project -> {
-            // Check if current user is a manager
-            if ("manager".equals(currentUserRole)) {
-                return;
-            }
-            
             // Navigate to TaskActivity for this project
             Intent intent = new Intent(ProjectActivity.this, TaskActivity.class);
             intent.putExtra("projectId", project.uid);

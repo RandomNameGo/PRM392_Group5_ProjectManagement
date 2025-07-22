@@ -1,6 +1,7 @@
 package com.example.prm392_group5.view.activity;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,12 +10,20 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,12 +44,14 @@ import java.util.UUID;
 
 public class TaskActivity extends AppCompatActivity implements TaskContract.View, UserContract.View {
 
-    private EditText etTaskTitle, etTaskDescription;
-    private Spinner spinnerStatus, spinnerAssignee;
-    private Button btnAddTask, btnUpdateTask, btnCancelEdit;
+    private EditText etTaskTitle, etTaskDescription, etDeadlineDate;
+    private Spinner spinnerAssignee;
+    private Button btnAddTask, btnUpdateTask, btnCancelEdit, btnClearDeadline;
     private RecyclerView recyclerViewTasks;
-    private LinearLayout layoutCreateTaskHeader, layoutCreateTaskContent;
+    private LinearLayout layoutCreateTaskHeader, layoutCreateTaskContent, layoutProjectProgress;
     private ImageView headerImage, ivTaskExpandCollapse;
+    private ProgressBar progressBarProject;
+    private TextView tvProgressPercentage;
     
     private TaskPresenter taskPresenter;
     private UserPresenter userPresenter;
@@ -53,6 +64,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private String projectId;
     private Task editingTask = null;
     private boolean isCreateTaskExpanded = false;
+    private long selectedDeadline = 0; // Store selected deadline timestamp
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,11 +106,12 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private void initViews() {
         etTaskTitle = findViewById(R.id.etTaskTitle);
         etTaskDescription = findViewById(R.id.etTaskDescription);
-        spinnerStatus = findViewById(R.id.spinnerStatus);
+        etDeadlineDate = findViewById(R.id.etDeadlineDate);
         spinnerAssignee = findViewById(R.id.spinnerAssignee);
         btnAddTask = findViewById(R.id.btnAddTask);
         btnUpdateTask = findViewById(R.id.btnUpdateTask);
         btnCancelEdit = findViewById(R.id.btnCancelEdit);
+        btnClearDeadline = findViewById(R.id.btnClearDeadline);
         recyclerViewTasks = findViewById(R.id.recyclerViewTasks);
         
         // Shrinkable bar elements
@@ -106,6 +119,11 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         layoutCreateTaskContent = findViewById(R.id.layoutCreateTaskContent);
         headerImage = findViewById(R.id.headerImage);
         ivTaskExpandCollapse = findViewById(R.id.ivTaskExpandCollapse);
+        
+        // Progress bar elements
+        layoutProjectProgress = findViewById(R.id.layoutProjectProgress);
+        progressBarProject = findViewById(R.id.progressBarProject);
+        tvProgressPercentage = findViewById(R.id.tvProgressPercentage);
     }
 
     private void initData() {
@@ -124,10 +142,26 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         recyclerViewTasks.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTasks.setAdapter(adapter);
         
+        // Set current user ID and role for the adapter to control checkbox visibility
+        adapter.setCurrentUserId(currentUserId);
+        adapter.setCurrentUserRole(currentUserRole);
+        
         // Set member mode to hide edit/delete buttons for members
         adapter.setMemberMode("member".equals(currentUserRole));
         
         adapter.setTaskActionListener(new TaskAdapter.TaskActionListener() {
+            @Override
+            public void onTaskCompleteChanged(Task task, boolean isCompleted) {
+                // Only assigned members can change task completion status
+                if (currentUserId.equals(task.assignedTo)) {
+                    updateTaskCompletionStatus(task, isCompleted);
+                } else {
+                    Toast.makeText(TaskActivity.this, "Only the assigned member can change this task's completion status", Toast.LENGTH_SHORT).show();
+                    // Reset checkbox to original state
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
             @Override
             public void onEditTask(Task task) {
                 if ("leader".equals(currentUserRole) || "manager".equals(currentUserRole)) {
@@ -170,17 +204,17 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         btnAddTask.setOnClickListener(v -> addTask());
         btnUpdateTask.setOnClickListener(v -> updateTask());
         btnCancelEdit.setOnClickListener(v -> cancelEdit());
+        btnClearDeadline.setOnClickListener(v -> clearDeadline());
+        
+        // Deadline date picker
+        etDeadlineDate.setOnClickListener(v -> showDatePicker());
         
         // Shrinkable bar click listener
         layoutCreateTaskHeader.setOnClickListener(v -> toggleCreateTaskSection());
     }
 
     private void setupSpinners() {
-        // Status spinner
-        String[] statuses = {"To Do", "In Progress", "Done"};
-        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, statuses);
-        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(statusAdapter);
+        // Status is now automatically managed - no status spinner needed
     }
 
     private void setupAssigneeSpinner() {
@@ -196,9 +230,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     }
 
     private void addTask() {
+        android.util.Log.d("TaskActivity", "addTask called - starting task creation");
         String title = etTaskTitle.getText().toString().trim();
         String description = etTaskDescription.getText().toString().trim();
-        String status = spinnerStatus.getSelectedItem().toString();
         
         if (title.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -207,8 +241,10 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
 
         String assignedTo = getSelectedUserId();
         String taskId = UUID.randomUUID().toString();
-        Task task = new Task(title, description, assignedTo, status);
+        // All new tasks automatically start with "In Progress" status
+        Task task = new Task(title, description, assignedTo, "In Progress", selectedDeadline);
         
+        android.util.Log.d("TaskActivity", "Creating task with ID: " + taskId + ", Project ID: " + projectId);
         taskPresenter.createTask(projectId, taskId, task);
     }
 
@@ -217,7 +253,6 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         
         String title = etTaskTitle.getText().toString().trim();
         String description = etTaskDescription.getText().toString().trim();
-        String status = spinnerStatus.getSelectedItem().toString();
 
         if (title.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -226,8 +261,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
 
         editingTask.title = title;
         editingTask.description = description;
-        editingTask.status = status;
+        // Status is automatically managed - don't change it during edit
         editingTask.assignedTo = getSelectedUserId();
+        editingTask.deadline = selectedDeadline;
         
         // Using title as taskId for now - in real app, you'd have proper IDs
         taskPresenter.updateTask(projectId, editingTask.title, editingTask);
@@ -250,14 +286,11 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         etTaskTitle.setText(task.title);
         etTaskDescription.setText(task.description);
         
-        // Set status spinner
-        String[] statuses = {"To Do", "In Progress", "Done"};
-        for (int i = 0; i < statuses.length; i++) {
-            if (statuses[i].equals(task.status)) {
-                spinnerStatus.setSelection(i);
-                break;
-            }
-        }
+        // Set deadline
+        selectedDeadline = task.deadline;
+        updateDeadlineDisplay();
+        
+        // Status is automatically managed - no need to set status spinner
         
         // Set assignee spinner
         for (int i = 0; i < userList.size(); i++) {
@@ -284,8 +317,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     private void clearForm() {
         etTaskTitle.setText("");
         etTaskDescription.setText("");
-        spinnerStatus.setSelection(0);
         spinnerAssignee.setSelection(0);
+        selectedDeadline = 0;
+        updateDeadlineDisplay();
     }
 
     private void showDeleteConfirmation(Task task) {
@@ -302,6 +336,7 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     // TaskContract.View implementations
     @Override
     public void onTaskCreated() {
+        android.util.Log.d("TaskActivity", "onTaskCreated called - task created successfully");
         Toast.makeText(this, "Task created successfully", Toast.LENGTH_SHORT).show();
         clearForm();
         collapseCreateTaskSection(); // Auto-collapse after successful creation
@@ -316,8 +351,14 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     @Override
     public void onTaskUpdated() {
         Toast.makeText(this, "Task updated successfully", Toast.LENGTH_SHORT).show();
-        cancelEdit();
-        collapseCreateTaskSection(); // Auto-collapse after successful update
+        
+        // Only cancel edit and collapse if we're in edit mode
+        if (editingTask != null) {
+            cancelEdit();
+            collapseCreateTaskSection(); // Auto-collapse after successful update
+        }
+        
+        // Refresh the task list to show updated status
         taskPresenter.getAllTasks(projectId);
     }
 
@@ -329,9 +370,11 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
 
     @Override
     public void onTaskListLoaded(List<Task> taskList) {
+        android.util.Log.d("TaskActivity", "onTaskListLoaded called with " + taskList.size() + " tasks");
         this.taskList.clear();
         this.taskList.addAll(taskList);
         adapter.updateTasks(this.taskList);
+        updateProjectProgress();
     }
 
     @Override
@@ -370,6 +413,9 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
     @Override
     public void onError(String error) {
         Toast.makeText(this, "Error: " + error, Toast.LENGTH_LONG).show();
+        // Don't finish the activity on error - just show the error message
+        // Log the error for debugging
+        android.util.Log.e("TaskActivity", "Error occurred: " + error);
     }
 
     private void setupAnimations() {
@@ -420,5 +466,97 @@ public class TaskActivity extends AppCompatActivity implements TaskContract.View
         if (!isCreateTaskExpanded) {
             expandCreateTaskSection();
         }
+    }
+
+    private void showDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        if (selectedDeadline > 0) {
+            calendar.setTimeInMillis(selectedDeadline);
+        }
+        
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+            this,
+            (view, year, month, dayOfMonth) -> {
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(year, month, dayOfMonth, 23, 59, 59); // Set to end of day
+                selectedDeadline = selectedDate.getTimeInMillis();
+                updateDeadlineDisplay();
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        
+        // Set minimum date to today
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    }
+
+    private void clearDeadline() {
+        selectedDeadline = 0;
+        updateDeadlineDisplay();
+        Toast.makeText(this, "Deadline cleared", Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateDeadlineDisplay() {
+        if (selectedDeadline == 0) {
+            etDeadlineDate.setText("");
+            etDeadlineDate.setHint("Select Date");
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+            etDeadlineDate.setText(sdf.format(new Date(selectedDeadline)));
+        }
+    }
+
+    private void updateTaskCompletionStatus(Task task, boolean isCompleted) {
+        // Update task status based on checkbox state
+        if (isCompleted) {
+            task.status = "Done";
+            Toast.makeText(this, "Task marked as completed!", Toast.LENGTH_SHORT).show();
+        } else {
+            task.status = "In Progress";
+            Toast.makeText(this, "Task marked as in progress!", Toast.LENGTH_SHORT).show();
+        }
+        
+        // Update the task in Firebase
+        taskPresenter.updateTask(projectId, task.title, task);
+        
+        // Immediately update the adapter to reflect the change
+        adapter.notifyDataSetChanged();
+        
+        // Update progress after status change
+        updateProjectProgress();
+    }
+
+    private void updateProjectProgress() {
+        if (taskList.isEmpty()) {
+            // Hide progress bar if no tasks
+            layoutProjectProgress.setVisibility(View.GONE);
+            return;
+        }
+
+        // Show progress bar if there are tasks
+        layoutProjectProgress.setVisibility(View.VISIBLE);
+
+        // Calculate completion percentage
+        int totalTasks = taskList.size();
+        int completedTasks = 0;
+
+        for (Task task : taskList) {
+            if ("Done".equals(task.status)) {
+                completedTasks++;
+            }
+        }
+
+        int progressPercentage = totalTasks > 0 ? (completedTasks * 100) / totalTasks : 0;
+
+        // Update progress bar and text
+        progressBarProject.setProgress(progressPercentage);
+        tvProgressPercentage.setText(progressPercentage + "%");
+
+        // Add animation to progress bar
+        android.animation.ObjectAnimator.ofInt(progressBarProject, "progress", 0, progressPercentage)
+                .setDuration(1000)
+                .start();
     }
 }
