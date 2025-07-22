@@ -109,13 +109,13 @@
 
     <!-- Decorative Elements -->
     <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="-60dp"
         android:layout_gravity="start|top"
-        android:translationY="60dp"
-        android:translationX="-30dp"
+        android:translationY="40dp"
+        android:translationX="-50dp"
         android:background="@drawable/coffeeman"
         android:elevation="12dp"
         />
@@ -125,9 +125,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginBottom="20dp"
-        android:elevation="15dp">
+        android:paddingHorizontal="25dp"
+        android:paddingTop="10dp"
+        android:layout_marginBottom="-30dp"
+        android:layout_marginTop="10dp"
+        android:elevation="15dp"
+        android:background="@drawable/navigation_bar_bg">
 
         <Button
             android:id="@+id/btnProfile"
@@ -138,9 +141,9 @@
             android:text="Profile"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:backgroundTint="#D127AE60"
-            android:background="@drawable/glassmorphism_background"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:backgroundTint="#D150A6B6"
+            android:fontFamily="sans-serif-medium"
+            style="@style/Widget.Material3.Button" />
 
         <Button
             android:id="@+id/btnLogout"
@@ -151,9 +154,9 @@
             android:text="Logout"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:backgroundTint="#D1FF0000"
-            android:background="@drawable/glassmorphism_background"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
+            android:backgroundTint="#D1CC5D5D"
+            android:fontFamily="sans-serif-medium"
+            style="@style/Widget.Material3.Button" />
 
     </LinearLayout>
 </LinearLayout>

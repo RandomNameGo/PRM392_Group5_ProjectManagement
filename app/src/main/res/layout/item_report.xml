@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="Date"
                 android:textSize="12sp"
-                android:textColor="#95A5A6" />
+                android:textColor="#005C92" />
 
         </LinearLayout>
 
@@ -61,18 +61,19 @@
             <Button
                 android:id="@+id/btnEditReport"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 android:text="Edit"
                 android:textSize="12sp"
-                android:textColor="#4A90E2"
-                style="@style/Widget.Material3.Button.OutlinedButton" />
+                android:backgroundTint="#18B694"
+                android:textColor="#CDF6F8"
+                style="@style/Widget.Material3.Button" />
 
             <Button
                 android:id="@+id/btnDeleteReport"
                 android:layout_width="0dp"
-                android:layout_height="36dp"
+                android:layout_height="48dp"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:text="Delete"
