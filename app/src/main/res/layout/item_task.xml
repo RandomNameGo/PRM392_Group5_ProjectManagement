@@ -19,7 +19,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/cbTaskComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:buttonTint="#27AE60" />
 
             <TextView
                 android:id="@+id/tvTaskTitle"
@@ -69,6 +77,15 @@
             android:text="Assigned to: Unassigned"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="4dp" />
+
+        <TextView
+            android:id="@+id/tvTaskDeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Deadline: No deadline"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray"
             android:layout_marginBottom="12dp" />
 
         <!-- Action Buttons -->
@@ -77,14 +94,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Checkbox replaces Mark Done button -->
+
             <Button
                 android:id="@+id/btnEditTask"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_weight="1"
+                android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:text="Edit"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:backgroundTint="#1994A2"
                 style="@style/Widget.Material3.Button" />
 
@@ -96,7 +116,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:text="Delete"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:backgroundTint="@android:color/holo_red_light"
                 style="@style/Widget.Material3.Button" />
 
@@ -108,7 +128,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
                 android:text="Reports"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:backgroundTint="#4058FF"
                 style="@style/Widget.Material3.Button" />
 
@@ -119,7 +139,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:text="Issues"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:backgroundTint="#FF8C00"
                 style="@style/Widget.Material3.Button" />
 
